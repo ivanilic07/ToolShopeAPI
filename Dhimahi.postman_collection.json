@@ -1,0 +1,608 @@
+{
+	"info": {
+		"_postman_id": "e5304e08-b5c1-47ff-8750-9d9f2e26b24e",
+		"name": "Dhimahi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26463535"
+	},
+	"item": [
+		{
+			"name": "Post Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Status check\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//collecting token\r",
+							"const response = pm.response.json();\r",
+							"pm.environment.set('MyTokken', response.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"email\": \"{{AdminEmail}}\",\r\n   \"password\": \"{{AdminPassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Parse the response body\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"// Initialize an array to hold the IDs\r",
+							"var ids = [];\r",
+							"\r",
+							"// Loop over the 'data' array\r",
+							"for (var i = 0; i < jsonData.data.length; i++) {\r",
+							"    // Push each ID into the 'ids' array\r",
+							"    ids.push(jsonData.data[i].id);\r",
+							"}\r",
+							"\r",
+							"// Store the 'ids' array in an environment variable called 'Dhmiahi'\r",
+							"pm.environment.set('Dhmiahi', JSON.stringify(ids));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Add New Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Successfully created product status 201\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"//Create variable \r",
+							"const response = pm.response.json()\r",
+							"pm.environment.set(\"product_id\", response.id);\r",
+							"\r",
+							"pm.test(\"Response body has name property\", function () {\r",
+							"    pm.response.to.have.jsonBody('name');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has description property\", function () {\r",
+							"    pm.response.to.have.jsonBody('description');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has price property\", function () {\r",
+							"    pm.response.to.have.jsonBody('price');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has category_id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('category_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has brand_id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('brand_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has product_image_id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('product_image_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has is_location_offer property\", function () {\r",
+							"    pm.response.to.have.jsonBody('is_location_offer');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has is_rental property\", function () {\r",
+							"    pm.response.to.have.jsonBody('is_rental');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('id');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Name is correct\", function () {\r",
+							"    pm.expect(pm.response.json().name).to.eql(\"New Product By Ivan\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Description is correct\", function () {\r",
+							"    pm.expect(pm.response.json().description).to.eql(\"Testing Description for new product\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Price is correct\", function () {\r",
+							"    pm.expect(pm.response.json().price).to.eql(10);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().category_id).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Brand ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().brand_id).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product Image ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().product_image_id).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"is_location_offer is correct\", function () {\r",
+							"    pm.expect(pm.response.json().is_location_offer).to.eql(1);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"is_rental is correct\", function () {\r",
+							"    pm.expect(pm.response.json().is_rental).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"product_id\"))\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New Product By Ivan\",\r\n  \"description\": \"Testing Description for new product\",\r\n  \"price\": 10.00,\r\n  \"category_id\": 2,\r\n  \"brand_id\": 2,\r\n  \"product_image_id\": 2,\r\n  \"is_location_offer\": 1,\r\n  \"is_rental\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products With New Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Added Product Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response body has id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has name property\", function () {\r",
+							"    pm.response.to.have.jsonBody('name');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has description property\", function () {\r",
+							"    pm.response.to.have.jsonBody('description');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has stock property\", function () {\r",
+							"    pm.response.to.have.jsonBody('stock');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has price property\", function () {\r",
+							"    pm.response.to.have.jsonBody('price');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has is_location_offer property\", function () {\r",
+							"    pm.response.to.have.jsonBody('is_location_offer');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has is_rental property\", function () {\r",
+							"    pm.response.to.have.jsonBody('is_rental');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has brand_id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('brand_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has category_id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('category_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has product_image_id property\", function () {\r",
+							"    pm.response.to.have.jsonBody('product_image_id');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has product_image property\", function () {\r",
+							"    pm.response.to.have.jsonBody('product_image');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has category property\", function () {\r",
+							"    pm.response.to.have.jsonBody('category');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body has brand property\", function () {\r",
+							"    pm.response.to.have.jsonBody('brand');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().id).to.eql(pm.environment.get(\"product_id\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name is correct\", function () {\r",
+							"    pm.expect(pm.response.json().name).to.eql(\"New Product By Ivan\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Description is correct\", function () {\r",
+							"    pm.expect(pm.response.json().description).to.eql(\"Testing Description for new product\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Stock is null\", function () {\r",
+							"    pm.expect(pm.response.json().stock).to.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Price is correct\", function () {\r",
+							"    pm.expect(pm.response.json().price).to.eql(10);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"is_location_offer is correct\", function () {\r",
+							"    pm.expect(pm.response.json().is_location_offer).to.eql(1);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"is_rental is correct\", function () {\r",
+							"    pm.expect(pm.response.json().is_rental).to.eql(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Brand ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().brand_id).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().category_id).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product Image ID is correct\", function () {\r",
+							"    pm.expect(pm.response.json().product_image_id).to.eql(2);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product Image has the required properties\", function () {\r",
+							"    const productImage = pm.response.json().product_image;\r",
+							"    pm.expect(productImage).to.have.property('id');\r",
+							"    pm.expect(productImage).to.have.property('by_name');\r",
+							"    pm.expect(productImage).to.have.property('by_url');\r",
+							"    pm.expect(productImage).to.have.property('source_name');\r",
+							"    pm.expect(productImage).to.have.property('source_url');\r",
+							"    pm.expect(productImage).to.have.property('file_name');\r",
+							"    pm.expect(productImage).to.have.property('title');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category has the required properties\", function () {\r",
+							"    const category = pm.response.json().category;\r",
+							"    pm.expect(category).to.have.property('id');\r",
+							"    pm.expect(category).to.have.property('parent_id');\r",
+							"    pm.expect(category).to.have.property('name');\r",
+							"    pm.expect(category).to.have.property('slug');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Brand has the required properties\", function () {\r",
+							"    const brand = pm.response.json().brand;\r",
+							"    pm.expect(brand).to.have.property('id');\r",
+							"    pm.expect(brand).to.have.property('name');\r",
+							"    pm.expect(brand).to.have.property('slug');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Update Added Produt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is successful\", function () {\r",
+							"    pm.response.to.have.jsonBody({\r",
+							"        success: true\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New Product By Ivan\",\r\n  \"description\": \"Testing Description for new product\",\r\n  \"price\": 10.00,\r\n  \"category_id\": 2,\r\n  \"brand_id\": 2,\r\n  \"product_image_id\": 2,\r\n  \"is_location_offer\": 1,\r\n  \"is_rental\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Added Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body is not empty\", function () {\r",
+							"    pm.expect(pm.response.text()).to.be.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"{{product_id}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Check Deleted Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is successful\", function () {\r",
+							"\r",
+							"    pm.response.to.have.jsonBody({\r",
+							"        message: \"Requested item not found\"\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{MyTokken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/products/{{product_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"products",
+						"{{product_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
